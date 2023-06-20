@@ -51,17 +51,17 @@ export default function Home() {
             />
         </div>
 
-      {datasCompany ?
+      <div className={"flex flex-col gap-3"}>
         <BoxCompanyData
           {...datasCompany}
           checked={true}
         />
-        :
+
         <BoxCompanyData
           {...datasCompanyNotChecked}
           checked={false}
         />
-      }
+      </div>
     </main>
   )
 }

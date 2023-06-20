@@ -1,6 +1,6 @@
 import { PropsDataCompany } from "@/@types/data-company";
 
-export default function BoxCompanyData(props: PropsDataCompany | any, checked: boolean) {
+export default function BoxCompanyData(props: any, checked: boolean) {
     return (
         <div
             className={`
