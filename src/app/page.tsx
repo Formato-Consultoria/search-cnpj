@@ -7,15 +7,8 @@ import { getCompanyInfoFromRealtimeDatabase } from '@/functions/company.function
 
 export default function Home() {
   const [CNPJToBeSearched, sentCNPJToBeSearched] = useState("");
-  const [datasCompany, setDatasCompany] = useState<PropsDataCompany | any>({
-    cnpj: "",
-    company_name: "",
-    fantasy_name: "",
-    company_address: "",
-    company_city: "",
-    company_size: "",
-  });
-  const [datasCompanyNotChecked, setDatasCompanyNotChecked] = useState<any>();
+  const [datasCompany, setDatasCompany] = useState<PropsDataCompany | null>(null);
+  const [datasCompanyNotChecked, setDatasCompanyNotChecked] = useState<any>(null);
   
   function handleChangeSearchElement({ target }: ChangeEvent<HTMLInputElement>) {
     const { value } = target;
@@ -23,15 +16,21 @@ export default function Home() {
   }
 
   useEffect(() => {
-    async function exec() {
-      const comapny = await getCompanyInfoFromRealtimeDatabase(CNPJToBeSearched);
-      setDatasCompany(comapny);
-      const companyNotChecked = await fetch(`https://brasilapi.com.br/api/cnpj/v1/{${CNPJToBeSearched.replace(/[.-]/g, '')}}`);
-      setDatasCompanyNotChecked(companyNotChecked);
+    async function fetchData() {
+      const company = await getCompanyInfoFromRealtimeDatabase(CNPJToBeSearched);
+      if (company) {
+        setDatasCompany(company);
+      } else {
+        const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${CNPJToBeSearched.replace(/[.-]/g, '')}`);
+        const companyNotChecked = await response.json();
+        setDatasCompanyNotChecked(companyNotChecked);
+      }
     }
-    
-    exec();
-  }, [CNPJToBeSearched])
+
+    if (CNPJToBeSearched) {
+      fetchData();
+    }
+  }, [CNPJToBeSearched]);
 
   return (
     <main className="flex min-h-screen flex-col gap-10 items-center p-24">
@@ -50,22 +49,20 @@ export default function Home() {
               onChange={handleChangeSearchElement}
             />
         </div>
-      <div className={"flex flex-col gap-3"}>
-
-      {datasCompany ??
-        <BoxCompanyData
-          {...datasCompany}
-          checked={true}
-        />
-      }
-
-      {datasCompanyNotChecked ??
-        <BoxCompanyData
-          {...datasCompanyNotChecked}
-          checked={false}
-        />
-      }
-      </div>
+        <div className="flex flex-col gap-3">
+          {datasCompany && (
+            <BoxCompanyData
+              {...datasCompany}
+              checked={true}
+            />
+          )}
+          {datasCompanyNotChecked && (
+            <BoxCompanyData
+              {...datasCompanyNotChecked}
+              checked={false}
+            />
+          )}
+        </div>
     </main>
   )
 }
