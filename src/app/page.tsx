@@ -9,6 +9,7 @@ export default function Home() {
   const [CNPJToBeSearched, sentCNPJToBeSearched] = useState("");
   const [datasCompany, setDatasCompany] = useState<PropsDataCompany | any>(null);
   const [datasCompanyNotChecked, setDatasCompanyNotChecked] = useState<any>(null);
+  const [checked, setChecked] = useState(false);
   
   function handleChangeSearchElement({ target }: ChangeEvent<HTMLInputElement>) {
     const { value } = target;
@@ -20,7 +21,10 @@ export default function Home() {
       const company = await getCompanyInfoFromRealtimeDatabase(CNPJToBeSearched);
       if (company) {
         setDatasCompany(company);
+        setChecked(true);
       } else {
+        setChecked(false);
+
         const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${CNPJToBeSearched.replace(/[.-]/g, '')}`);
         const companyNotChecked = await response.json();
         setDatasCompanyNotChecked(companyNotChecked);
@@ -50,17 +54,10 @@ export default function Home() {
             />
         </div>
         <div className="flex flex-col gap-3">
-          {datasCompany ? (
-            <BoxCompanyData
-              {...datasCompany}
-              checked={true}
-            />
-          ): datasCompanyNotChecked && (
-            <BoxCompanyData
-              {...datasCompanyNotChecked}
-              checked={false}
-            />
-          )}
+          <BoxCompanyData
+            {...(datasCompany ? datasCompany : datasCompanyNotChecked)}
+            checked={checked}
+          />
         </div>
     </main>
   )
