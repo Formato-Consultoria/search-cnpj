@@ -50,13 +50,12 @@ export default function Home() {
             />
         </div>
         <div className="flex flex-col gap-3">
-          {datasCompany && (
+          {datasCompany ? (
             <BoxCompanyData
               {...datasCompany}
               checked={true}
             />
-          )}
-          {datasCompanyNotChecked && (
+          ): datasCompanyNotChecked && (
             <BoxCompanyData
               {...datasCompanyNotChecked}
               checked={false}
