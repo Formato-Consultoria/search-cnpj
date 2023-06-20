@@ -26,7 +26,7 @@ export default function Home() {
     async function exec() {
       const comapny = await getCompanyInfoFromRealtimeDatabase(CNPJToBeSearched);
       setDatasCompany(comapny);
-      const companyNotChecked = await fetch(`https://brasilapi.com.br/api/cnpj/v1/{${CNPJToBeSearched}}`);
+      const companyNotChecked = await fetch(`https://brasilapi.com.br/api/cnpj/v1/{${CNPJToBeSearched.replace(/[.-]/g, '')}}`);
       setDatasCompanyNotChecked(companyNotChecked);
     }
     
