@@ -15,7 +15,7 @@ export default function Home() {
     company_city: "",
     company_size: "",
   });
-  const [datasCompanyNotChecked, setDatasCompanyNotChecked] = useState<{}>();
+  const [datasCompanyNotChecked, setDatasCompanyNotChecked] = useState<any>();
   
   function handleChangeSearchElement({ target }: ChangeEvent<HTMLInputElement>) {
     const { value } = target;
@@ -50,17 +50,21 @@ export default function Home() {
               onChange={handleChangeSearchElement}
             />
         </div>
-
       <div className={"flex flex-col gap-3"}>
+
+      {datasCompany ??
         <BoxCompanyData
           {...datasCompany}
           checked={true}
         />
+      }
 
+      {datasCompanyNotChecked ??
         <BoxCompanyData
           {...datasCompanyNotChecked}
           checked={false}
         />
+      }
       </div>
     </main>
   )
