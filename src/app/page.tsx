@@ -7,7 +7,7 @@ import { getCompanyInfoFromRealtimeDatabase } from '@/functions/company.function
 
 export default function Home() {
   const [CNPJToBeSearched, sentCNPJToBeSearched] = useState("");
-  const [datasCompany, setDatasCompany] = useState<PropsDataCompany | null>(null);
+  const [datasCompany, setDatasCompany] = useState<PropsDataCompany | any>(null);
   const [datasCompanyNotChecked, setDatasCompanyNotChecked] = useState<any>(null);
   
   function handleChangeSearchElement({ target }: ChangeEvent<HTMLInputElement>) {
