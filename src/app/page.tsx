@@ -1,44 +1,15 @@
 'use client'
 import BoxCompanyData from '@/components/company-data';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { cnpj } from 'cpf-cnpj-validator';
-import { PropsDataCompany } from '@/@types/data-company';
-import { getCompanyInfoFromRealtimeDatabase } from '@/functions/company.function';
 
 export default function Home() {
   const [CNPJToBeSearched, sentCNPJToBeSearched] = useState("");
-  const [datasCompany, setDatasCompany] = useState<PropsDataCompany | any>(null);
-  const [datasCompanyNotChecked, setDatasCompanyNotChecked] = useState<any>(null);
-  const [checked, setChecked] = useState(false);
   
   function handleChangeSearchElement({ target }: ChangeEvent<HTMLInputElement>) {
     const { value } = target;
     sentCNPJToBeSearched(value);
   }
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const company = await getCompanyInfoFromRealtimeDatabase(CNPJToBeSearched);
-        if (company) {
-          setDatasCompany(company);
-          setChecked(true);
-        } else {
-          setChecked(false);
-
-          const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${CNPJToBeSearched.replace(/[.-]/g, '')}`);
-          const companyNotChecked = await response.json();
-          if(companyNotChecked) {
-            setDatasCompanyNotChecked(companyNotChecked);
-          }
-        }
-      } catch(error: any) {
-        console.error(error);
-      }
-    }
-
-    fetchData();
-  }, [CNPJToBeSearched]);
 
   return (
     <main className="flex min-h-screen flex-col gap-10 items-center p-24">
@@ -57,12 +28,8 @@ export default function Home() {
               onChange={handleChangeSearchElement}
             />
         </div>
-        <div className="flex flex-col gap-3">
-          <BoxCompanyData
-            {...(datasCompany ? datasCompany : datasCompanyNotChecked)}
-            checked={checked}
-          />
-        </div>
+        
+        <BoxCompanyData cnpj={CNPJToBeSearched} />
     </main>
   )
 }
