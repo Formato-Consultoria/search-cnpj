@@ -15,7 +15,7 @@ export default function Home() {
     company_city: "",
     company_size: "",
   });
-  const [datasCompanyNotChecked, setDatasCompanyNotChecked] = useState<any>();
+  const [datasCompanyNotChecked, setDatasCompanyNotChecked] = useState<{}>();
   
   function handleChangeSearchElement({ target }: ChangeEvent<HTMLInputElement>) {
     const { value } = target;
@@ -56,12 +56,12 @@ export default function Home() {
       {datasCompany ?
         <BoxCompanyData
           {...datasCompany}
-          dontChecked={true}
+          checked={true}
         />
         :
         <BoxCompanyData
           {...datasCompanyNotChecked}
-          dontChecked={false}
+          checked={false}
         />
       }
     </main>
