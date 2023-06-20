@@ -18,22 +18,26 @@ export default function Home() {
 
   useEffect(() => {
     async function fetchData() {
-      const company = await getCompanyInfoFromRealtimeDatabase(CNPJToBeSearched);
-      if (company) {
-        setDatasCompany(company);
-        setChecked(true);
-      } else {
-        setChecked(false);
+      try {
+        const company = await getCompanyInfoFromRealtimeDatabase(CNPJToBeSearched);
+        if (company) {
+          setDatasCompany(company);
+          setChecked(true);
+        } else {
+          setChecked(false);
 
-        const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${CNPJToBeSearched.replace(/[.-]/g, '')}`);
-        const companyNotChecked = await response.json();
-        setDatasCompanyNotChecked(companyNotChecked);
+          const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${CNPJToBeSearched.replace(/[.-]/g, '')}`);
+          const companyNotChecked = await response.json();
+          if(companyNotChecked) {
+            setDatasCompanyNotChecked(companyNotChecked);
+          }
+        }
+      } catch(error: any) {
+        console.error(error);
       }
     }
 
-    if (CNPJToBeSearched) {
-      fetchData();
-    }
+    fetchData();
   }, [CNPJToBeSearched]);
 
   return (
