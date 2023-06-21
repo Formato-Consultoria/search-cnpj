@@ -34,7 +34,7 @@ export default function Home() {
     try {
       await schema.validate(data);
       console.log("CNPJ válido:", data.cnpj);
-      const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${data.cnpj.replace(/[.-]/g, '')}`);
+      const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${data.cnpj.replace(/[.-/]/g, '')}`);
       const unregisteredCompanies = await response.json();
 
       if (unregisteredCompanies) {
