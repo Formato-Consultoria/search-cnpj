@@ -42,7 +42,6 @@ export default function Home() {
   const onSubmit = async (data: FormData) => {
     try {
       await schema.validate(data);
-      console.log("CNPJ válido:", data.cnpj);
       const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${data.cnpj.replace(/[.-/]/g, '')}`);
       const unregisteredCompanies = await response.json();
 
@@ -78,12 +77,13 @@ export default function Home() {
               value={cnpj.format(CNPJToBeSearched)}
               onChange={handleChangeSearchElement}
             />
-            {errors.cnpj && <span className="text-red-500">CNPJ inválido</span>}
         </div>
         <button type="submit" className="p-3 ml-2 text-sm font-medium text-white bg-zinc-900 rounded-xl border border-zinc-900 hover:bg-zinc-800 focus:ring-4 focus:outline-none focus:ring-zinc-300 dark:bg-zinc-600 dark:hover:bg-zinc-700 dark:focus:ring-zinc-800">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           <span className="sr-only">Search</span>
         </button>
+
+        {errors.cnpj && <p className="text-red-500">CNPJ inválido</p>}
       </form>
 
       <div className="grid grid-cols-2 gap-2">
@@ -101,11 +101,42 @@ export default function Home() {
         <BoxCompanyData
           companyData={companyDataChecked}
           className={"text-white bg-green-600 ring-zinc-200"}
+          classNameRow={{
+            tr: "bg-green-600 border-b hover:bg-green-500",
+            th: "px-6 py-4 font-medium text-white whitespace-nowrap"
+          }}
         /> : (
           (companyDataUnchecked && CNPJToBeSearched != '') ?
           <BoxCompanyData
-            companyData={companyDataUnchecked}
+            companyData={(() => {
+              const {
+                cnpj,
+                descricao_tipo_de_logradouro,
+                logradouro,
+                numero,
+                complemento,
+                bairro,
+                municipio, uf,
+                razao_social,
+                nome_fantasia,
+                porte
+              } = companyDataUnchecked;
+
+              return {
+                cnpj,
+                company_address: `${descricao_tipo_de_logradouro} ${logradouro}, ${numero}, ${complemento}, ${bairro}, ${municipio} - ${uf}`,
+                company_city: municipio,
+                company_name: razao_social,
+                fantasy_name: nome_fantasia,
+                company_size: porte
+              }
+            })()}
+            rowCompanyData={companyDataUnchecked}
             className={"text-zinc-900 bg-zinc-100 ring-zinc-300"}
+            classNameRow={{
+              tr: "text-zinc-900 bg-zinc-100 border-b hover:bg-zinc-50",
+              th: "px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+            }}
           /> : 
           <div role="status" className="w-full lg:w-[1050px] h-5/6 lg:max-h-96 animate-pulse">
               <div className="h-2.5 bg-gray-50 rounded-full w-48 mb-4"></div>
