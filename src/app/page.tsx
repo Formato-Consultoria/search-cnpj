@@ -7,6 +7,7 @@ import { cnpj } from 'cpf-cnpj-validator';
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { getCompanyInfoFromRealtimeDatabase } from '@/functions/company.function';
+import { PropsDataCompany } from '@/@types/data-company';
 
 interface FormData {
   cnpj: string;
@@ -22,8 +23,8 @@ export default function Home() {
   const [CNPJToBeSearched, sentCNPJToBeSearched] = useState("");
   const cnpjSearched = watch('cnpj');
 
-  const [companyData, setCompanyData] = useState<any>(null);
-  const [checked, setChecked] = useState<any>(false);
+  const [companyDataChecked, setCompanyDataChecked] = useState<PropsDataCompany | any>(null);
+  const [companyDataUnchecked, setCompanyDataUnchecked] = useState<any>(null);
   
   function handleChangeSearchElement({ target }: ChangeEvent<HTMLInputElement>) {
     const { value } = target;
@@ -38,11 +39,7 @@ export default function Home() {
       const unregisteredCompanies = await response.json();
 
       if (unregisteredCompanies) {
-        setCompanyData(unregisteredCompanies);
-        console.log("ENCONTRADO NO brasilapi: ", unregisteredCompanies);
-        setChecked(false);
-      } else {
-        console.log("NÃO ENCONTRADO NO brasilapi: ", unregisteredCompanies);
+        setCompanyDataUnchecked(unregisteredCompanies);
       }
     } catch (error: any) {
       console.log("Erro na validação do CNPJ:", error.message);
@@ -53,8 +50,7 @@ export default function Home() {
     async function fetchData() {
       const registeredCompanies = await getCompanyInfoFromRealtimeDatabase(cnpjSearched);
       if(registeredCompanies) {
-        setCompanyData(registeredCompanies);
-        setChecked(true);
+        setCompanyDataChecked(registeredCompanies);
       }
     }
 
@@ -62,10 +58,10 @@ export default function Home() {
   }, [cnpjSearched, CNPJToBeSearched])
 
   return (
-    <main className="flex min-h-screen flex-col gap-10 items-center p-24">
+    <main className="flex min-h-screen flex-col gap-8 items-center py-24 px-5">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex items-center"
+        className="flex items-center relative"
       >
         <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
         <div className="relative">
@@ -90,11 +86,28 @@ export default function Home() {
           <span className="sr-only">Search</span>
         </button>
       </form>
-        
-      <BoxCompanyData
-        companyData={companyData}
-        checked={checked}
-      />
+
+      <div className="grid grid-cols-2 gap-2">
+        <div className="flex items-center">
+          <div className="w-5 h-5 bg-zinc-100"></div>
+          <small className="ml-2 font-medium">Não Cadastrado</small>
+        </div>
+        <div className="flex items-center">
+          <div className="w-5 h-5 bg-green-600"></div>
+          <small className="ml-2 font-medium">Cadastrado</small>
+        </div>
+      </div>
+
+      {companyDataChecked ?
+        <BoxCompanyData
+          companyData={companyDataChecked}
+          className={"text-white bg-green-600 ring-zinc-200"}
+        /> : (companyDataUnchecked &&
+        <BoxCompanyData
+          companyData={companyDataUnchecked}
+          className={"text-zinc-900 bg-zinc-100 ring-zinc-300"}
+      />)}
     </main>
   )
 }
+
