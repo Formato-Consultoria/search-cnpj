@@ -57,7 +57,7 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col gap-8 items-center py-24 px-5">
+    <main className="flex min-h-screen flex-col gap-8 items-center py-24 px-2.5">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex items-center relative"
@@ -71,7 +71,7 @@ export default function Home() {
               type="search"
               {...register("cnpj")}
               id="default-search"
-              className="block w-96 p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="block w-60 md:w-80 lg:w-96 p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="CNPJ (ex: xx.xxx.xxx/0001-xx)"
               required
               maxLength={18}
@@ -102,7 +102,7 @@ export default function Home() {
           companyData={companyDataChecked}
           className={"text-white bg-green-600 ring-zinc-200"}
         /> : (
-          companyDataUnchecked ?
+          (companyDataUnchecked && CNPJToBeSearched != '') ?
           <BoxCompanyData
             companyData={companyDataUnchecked}
             className={"text-zinc-900 bg-zinc-100 ring-zinc-300"}
