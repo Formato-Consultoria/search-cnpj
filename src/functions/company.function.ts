@@ -7,7 +7,7 @@ export async function getCompanyInfoFromRealtimeDatabase(cnpj: string) {
         const snapshot = await get(child(ref(realtimeDatabase), '/companies'));
         if (snapshot.exists()) {
             const sessions = snapshot.val();
-            const filteredSessions = Object.values(sessions).filter((session: any) => session.cnpj === cnpj);
+            const filteredSessions = Object.values(sessions).filter((session: any) => session.cnpj.replace(/[.-/]/g, '').includes(cnpj.replace(/[.-/]/g, '').trim()));
             if (filteredSessions.length > 0) {
                 return filteredSessions[0];
             } else {

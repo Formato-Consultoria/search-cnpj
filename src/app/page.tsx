@@ -26,9 +26,17 @@ export default function Home() {
   const [companyDataChecked, setCompanyDataChecked] = useState<PropsDataCompany | any>(null);
   const [companyDataUnchecked, setCompanyDataUnchecked] = useState<any>(null);
   
-  function handleChangeSearchElement({ target }: ChangeEvent<HTMLInputElement>) {
+  async function handleChangeSearchElement({ target }: ChangeEvent<HTMLInputElement>) {
     const { value } = target;
     sentCNPJToBeSearched(value);
+
+    console.log(value);
+    const registeredCompanies = await getCompanyInfoFromRealtimeDatabase(value);
+    if(registeredCompanies) {
+      setCompanyDataChecked(registeredCompanies);
+    } else {
+      setCompanyDataChecked(null);
+    }
   }
 
   const onSubmit = async (data: FormData) => {
@@ -40,22 +48,13 @@ export default function Home() {
 
       if (unregisteredCompanies) {
         setCompanyDataUnchecked(unregisteredCompanies);
+      } else {
+        setCompanyDataUnchecked(null);
       }
     } catch (error: any) {
       console.log("Erro na validação do CNPJ:", error.message);
     }
   }
-
-  useEffect(() => {
-    async function fetchData() {
-      const registeredCompanies = await getCompanyInfoFromRealtimeDatabase(cnpjSearched);
-      if(registeredCompanies) {
-        setCompanyDataChecked(registeredCompanies);
-      }
-    }
-
-    fetchData();
-  }, [cnpjSearched, CNPJToBeSearched])
 
   return (
     <main className="flex min-h-screen flex-col gap-8 items-center py-24 px-5">
@@ -98,15 +97,29 @@ export default function Home() {
         </div>
       </div>
 
-      {companyDataChecked ?
+      {(companyDataChecked && CNPJToBeSearched != '')?
         <BoxCompanyData
           companyData={companyDataChecked}
           className={"text-white bg-green-600 ring-zinc-200"}
-        /> : (companyDataUnchecked &&
-        <BoxCompanyData
-          companyData={companyDataUnchecked}
-          className={"text-zinc-900 bg-zinc-100 ring-zinc-300"}
-      />)}
+        /> : (
+          companyDataUnchecked ?
+          <BoxCompanyData
+            companyData={companyDataUnchecked}
+            className={"text-zinc-900 bg-zinc-100 ring-zinc-300"}
+          /> : 
+          <div role="status" className="w-full lg:w-[1050px] h-5/6 lg:max-h-96 animate-pulse">
+              <div className="h-2.5 bg-gray-50 rounded-full w-48 mb-4"></div>
+              <div className="h-2 bg-gray-50 rounded-full max-w-[360px] mb-2.5"></div>
+              <div className="h-2 bg-gray-50 rounded-full mb-2.5 w-11/12"></div>
+              <div className="h-2 bg-gray-50 rounded-full mb-2.5"></div>
+              <div className="h-2 bg-gray-50 rounded-full mb-2.5 w-11/12"></div>
+              <div className="h-2 bg-gray-50 rounded-full max-w-[330px] mb-2.5"></div>
+              <div className="h-2 bg-gray-50 rounded-full max-w-[340px] mb-2.5"></div>
+              <div className="h-2 bg-gray-50 rounded-full max-w-[440px] mb-2.5"></div>
+              <div className="h-2 bg-gray-50 rounded-full max-w-[400px] mb-2.5"></div>
+              <span className="sr-only">Loading...</span>
+          </div>
+        )}
     </main>
   )
 }
