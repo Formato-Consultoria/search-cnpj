@@ -129,6 +129,14 @@ export default function BoxCompanyData({
                 {companyData.company_size}
               </td>
             </tr>
+            <tr className={classNameRow.tr}>
+              <th scope="row" className={classNameRow.th}>
+                Status
+              </th>
+              <td className="px-6 py-4">
+                {companyData?.status_diagnostic?.join(" | ").toUpperCase()}
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -180,14 +188,6 @@ export default function BoxCompanyData({
                 {companyData.company_size}
               </td>
             </tr>
-            {companyData?.status_diagnostic && <tr className={classNameRow.tr}>
-              <th scope="row" className={classNameRow.th}>
-                Porte
-              </th>
-              <td className="px-6 py-4">
-                {companyData?.status_diagnostic.join(" | ")}
-              </td>
-            </tr>}
           </tbody>
         </table>
       </div>
