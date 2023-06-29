@@ -1,6 +1,6 @@
 import { PropsDataCompany } from "@/@types/data-company";
 import { realtimeDatabase } from "@/firebase/firebase";
-import { child, get, ref } from "firebase/database";
+import { child, get, ref, push, set } from "firebase/database";
 
 export async function getCompanyInfoFromRealtimeDatabase(cnpj: string) {
     try {
@@ -16,6 +16,15 @@ export async function getCompanyInfoFromRealtimeDatabase(cnpj: string) {
         } else {
             return null;
         }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function recordsDiagnosticInfoInTheDatabaseInRealTime(data: PropsDataCompany) {
+    try {
+        const novoRegistroRef = push(child(ref(realtimeDatabase), '/companies'));
+        await set(novoRegistroRef, data);
     } catch (error) {
         console.log(error);
     }

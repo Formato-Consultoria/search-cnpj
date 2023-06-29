@@ -1,13 +1,14 @@
 'use client'
 import BoxCompanyData from '@/components/company-data';
 
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { cnpj } from 'cpf-cnpj-validator';
 
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { getCompanyInfoFromRealtimeDatabase } from '@/functions/company.function';
 import { PropsDataCompany } from '@/@types/data-company';
+import { Toaster } from "react-hot-toast";
 
 interface FormData {
   cnpj: string;
@@ -39,7 +40,7 @@ export default function Home() {
     }
   }
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmitSearch = async (data: FormData) => {
     try {
       await schema.validate(data);
       const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${data.cnpj.replace(/[.-/]/g, '')}`);
@@ -55,10 +56,14 @@ export default function Home() {
     }
   }
 
-  return (
+  return (<>
+    <Toaster
+      position="top-center"
+      reverseOrder={false}
+    />
     <main className="flex min-h-screen flex-col gap-8 items-center py-24 px-2.5">
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onSubmitSearch)}
         className="flex items-center relative"
       >
         <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
@@ -139,19 +144,6 @@ export default function Home() {
               }}
             /> :
             (<>
-              {/* <div role="status" className="w-full lg:w-[1050px] h-5/6 lg:max-h-96 animate-pulse">
-                <div className="h-2.5 bg-gray-50 rounded-full w-48 mb-4"></div>
-                <div className="h-2 bg-gray-50 rounded-full max-w-[360px] mb-2.5"></div>
-                <div className="h-2 bg-gray-50 rounded-full mb-2.5 w-11/12"></div>
-                <div className="h-2 bg-gray-50 rounded-full mb-2.5"></div>
-                <div className="h-2 bg-gray-50 rounded-full mb-2.5 w-11/12"></div>
-                <div className="h-2 bg-gray-50 rounded-full max-w-[330px] mb-2.5"></div>
-                <div className="h-2 bg-gray-50 rounded-full max-w-[340px] mb-2.5"></div>
-                <div className="h-2 bg-gray-50 rounded-full max-w-[440px] mb-2.5"></div>
-                <div className="h-2 bg-gray-50 rounded-full max-w-[400px] mb-2.5"></div>
-                <span className="sr-only">Loading...</span>
-              </div> */}
-
               <div role="status" className="w-full lg:w-[700px] h-5/6 lg:max-h-96 space-y-4 divide-y divide-gray-200 animate-pulse p-2.5 md:p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -194,6 +186,6 @@ export default function Home() {
             )
         )}
     </main>
-  )
+  </>)
 }
 

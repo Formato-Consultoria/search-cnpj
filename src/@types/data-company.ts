@@ -5,4 +5,6 @@ export interface PropsDataCompany {
     company_address: string
     company_city: string,
     company_size: string,
+    status_diagnostic?: Array<'diagnostico' | 'forms' | 'sebrai play' | 'voltar depois' | 'recusa de diagnostico' | 'nome do agente'>,
+    name_agent?: string
 }
