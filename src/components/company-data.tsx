@@ -59,16 +59,6 @@ export default function BoxCompanyData({
   }
 
   async function onSubmit(data: FormDataType) {
-    if (data.status_diagnostic.length === 0) {
-      setError('status_diagnostic', { type: 'required', message: 'Selecione pelo menos uma opção' });
-      return;
-    }
-
-    if (!data.name_agent) {
-      setError('name_agent', { type: 'required', message: 'Digite o nome do agente' });
-      return;
-    }
-
     if (data) {
       const formattedData = {...companyData, ...data}
       await toast.promise(
@@ -214,10 +204,10 @@ export default function BoxCompanyData({
         </ul>
       </div>
 
-      {(tabesChange.table1) && <>
+      {(tabesChange.table1) && <div>
         <h2 className="text-lg font-semibold">Registro de Diagnóstico</h2>
         <form
-          className={"flex flex-col gap-2 md:gap-4 w-full md:w-[500px] p-2.5"}
+          className={"flex flex-col gap-2 md:gap-4 w-full p-2.5"}
           onSubmit={handleSubmit(onSubmit)}
         >
           <label
@@ -227,15 +217,14 @@ export default function BoxCompanyData({
           <input
             type="text"
             id="name_agent"
-            {...register("name_agent")}
+            {...register("name_agent", { required: 'Digite o nome do agente' })}
               className={`
                 text-sm rounded-lg block w-full p-2.5
                 ${errors.name_agent ? "bg-red-100 border-red-400 text-red-900 placeholder-red-700" : "bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"}
             `}
             placeholder="ex.: Diego C. Silva"
-            required
           />
-          {errors.name_agent && (<small className="mt-2 text-xs font-medium text-red-600"> *{`${errors.name_agent?.message}`}</small>)}
+          {errors.name_agent && (<small className="text-xs font-medium text-red-600"> *{`${errors.name_agent?.message}`}</small>)}
 
           <ul className="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex">
             {optionCheck.map((option, index) => (
@@ -249,7 +238,7 @@ export default function BoxCompanyData({
                     type="checkbox"
                     value={option.toLowerCase()}
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                    {...register('status_diagnostic')}
+                    {...register('status_diagnostic', { required: 'Selecione pelo menos uma opção' })}
                   />
                   <label
                     htmlFor={option.toLowerCase().replace("", "-")}
@@ -259,7 +248,7 @@ export default function BoxCompanyData({
               </li>
             ))}
           </ul>
-          {errors.status_diagnostic && (<small className="my-2 text-xs font-medium text-red-600 dark:text-red-500"> *{`${errors.status_diagnostic?.message}`}</small>)}
+          {errors.status_diagnostic && (<small className="text-xs font-medium text-red-600 dark:text-red-500"> *{`${errors.status_diagnostic?.message}`}</small>)}
 
           <button
             type="submit"
@@ -268,7 +257,7 @@ export default function BoxCompanyData({
             Registrar
           </button>
         </form>
-      </>}
+      </div>}
 
       {(rowCompanyData && tabesChange.table2) &&
         <div
